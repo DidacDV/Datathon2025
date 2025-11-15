@@ -1,0 +1,100 @@
+/* Smooth, purple aesthetic for Smadex Revenue Viewer */
+
+:root {
+    --bg: #f4e9ff;
+    --purple-dark: #5a2d82;
+    --purple: #7b42b3;
+    --purple-light: #c8a4e8;
+    --white: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.08);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+    background: var(--bg);
+    color: var(--purple-dark);
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 2.7rem;
+    margin-bottom: 0.4rem;
+    color: var(--purple-dark);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--purple);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: var(--white);
+    padding: 1.8rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 14px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px var(--shadow);
+}
+
+.card h2 {
+    margin: 0;
+    color: var(--purple);
+}
+
+input {
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    border: 2px solid var(--purple-light);
+    font-size: 1rem;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--purple);
+}
+
+button {
+    background: var(--purple);
+    color: var(--white);
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+button:hover {
+    background: var(--purple-dark);
+}
+
+.output p {
+    font-size: 1.1rem;
+    color: var(--purple-dark);
+}

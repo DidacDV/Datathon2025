@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smadex Revenue Viewer</title>
+    <link rel="stylesheet" href="../static/style.css" />
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Smadex Revenue Insights</h1>
+            <p class="subtitle">Track and visualize user revenue effortlessly</p>
+        </header>
+
+        <section class="grid">
+            <div class="card">
+                <h2>User Lookup</h2>
+                <p>Enter a username to fetch revenue data from the backend API.</p>
+                <input id="user_name" type="text" placeholder="Enter user name" />
+                <button onclick="getRevenue()">Get Revenue</button>
+            </div>
+            <div class="card">
+                <h2>User Input</h2>
+                <input id="newUserName" type="text" placeholder="Enter user name" />
+                <input id="newUserRevenue" type="number" placeholder="Enter revenue" />
+                <button onclick="addUser()">Add User</button>
+            </div>
+
+            <div class="card output">
+                <h2>Revenue Result</h2>
+                <p id="result">Waiting for input...</p>
+            </div>
+        </section>
+    </div>
+
+<p id="addResult"></p>
+    <script src="../static/script.js"></script>
+</body>
+</html>
