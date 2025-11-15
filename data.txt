@@ -1,0 +1,100 @@
+
+Overview
+The Objective
+In this challenge, you will tackle a core, real-world problem from the ad-tech industry. We will provide you with an anonymized dataset of app installations. Your objective is to build a machine learning model that predicts the revenue each installation will generate with the highest possible accuracy.
+
+Start
+
+3 days ago
+Close
+a day to go
+Description
+The Real-World Constraint: Speed and Simplicity
+At Smadex, our models must make predictions within a tight time span (just a few milliseconds). A model that is 100% accurate but takes seconds to run is not useful in our live environment.
+
+Therefore, while accuracy is the primary goal, inference time and model simplicity are critical. A simple, fast, and elegant solution will be valued very highly over a complex solution that is slow to produce an answer. Your solution's design and efficiency will be a major factor in determining the winner.
+
+The Data and Features
+The dataset you will use mirrors our real-world data. Features are broadly split into two categories:
+
+Request Features: Information directly from the install event, such as device (model, OS, version) and time information.
+User Behavioral Information: Historical data about the user, including previous purchases, past app installs, connection types, history of ad requests, and more.
+Our Challenges, Your Challenges
+At Smadex, we are constantly working to improve our predictive models. Our systems have evolved from logistic regressions to our current models, which include Deep Neural Networks (DNNs) and LightGBM (LGBM). We are now exploring sequential models, like Transformers, to better understand and use user historical data.
+
+In this hackathon, we want you to face the same challenges we do every day. You will need to make smart, practical decisions about:
+
+Unbalanced Data: How will you handle the fact that most installations generate little to no revenue, while a few are highly valuable?
+Solution Design: Will you build a single model to predict the value? Or will you split the problem (e.aws, first predict if a user will pay, and then how much)? Perhaps a multitask approach?
+Feature Engineering: How will you select the most predictive features? How will you best preprocess the data, fill missing values and create meaningful embeddings (numerical representations) from it?
+Loss Functions: How will you choose the right loss function to guide your model's training effectively?
+Ideas
+💡 Some Concepts to Get You Started
+To help you kickstart your brainstorming, here are some common challenges and approaches we've encountered. These are just suggestions to guide your thinking, not a strict checklist. We strongly encourage you to experiment, think outside the box, and try your own novel approaches!
+
+1. Working with Large Datasets
+The datasets are very large and will likely not fit into memory.
+Consider using libraries like Dask for out-of-core processing (handling data in chunks) rather than loading everything at once.
+For faster experimentation, start with a subset of the data. This lets you iterate and debug your pipeline quickly before scaling up to the full dataset.
+Dask usage example:
+
+import dask
+import dask.dataframe as dd
+# When dask uses pandas 2.0.0+ it casts object columns to string automatically ([("i", 0.48)] -> '[("i", 0.48)]')
+dask.config.set({"dataframe.convert-string": False})
+
+dataset_path = "path/to/dataset"
+filters = [("datetime", ">=", "2025-10-01-00-00"), ("datetime", "<", "2025-10-13-00-00")]
+
+ddf = dd.read_parquet(
+    dataset_path,
+    filters=filters
+)
+2. Start Simple with Preprocessing
+It's easy to get lost in complex preprocessing. We suggest starting with a minimal viable version using only the most promising and easy-to-engineer features.
+Once your first pipeline runs end-to-end, you can gradually introduce more advanced steps, such as encoding categorical features (target, frequency, embeddings), feature normalization, or binning.
+3. Understanding the Target Variable
+Your main target is iap_revenue_d7 (in-app purchase revenue within 7 days). You also have a buyer_d7 flag.
+You can approach this in several ways. For example:
+Two-Step Modeling: First, predict the probability of a user becoming a buyer (P(buyer_d7 | install)). Second, predict the expected revenue given they are a buyer (E[iap_revenue_d7 | buyer_d7]). Then, multiply the two.
+Single-Step Modeling: Predict the expected revenue directly (E[iap_revenue_d7 | install]).
+The two-step approach can sometimes help with imbalanced data, but it isn't always simpler. Consider your time and resources.
+4. Handling Imbalanced Data
+Most installations will have zero or near-zero revenue. This imbalance can make model training difficult.
+Consider applying a log(1 + revenue) transformation to the target (especially if the evaluation metric is MSLE).
+Choosing the right custom loss function can also be very important in stabilizing training.
+5. Leveraging Multiple Labels
+The dataset may contain other useful targets like buyer_d1, iap_revenue_d1, etc. These labels all contain correlated information.
+You could exploit this using multi-task learning, where a single model predicts multiple targets simultaneously. This can help the model learn shared representations, but be aware that multi-task learning can also add its own risks and difficulties.
+6. Balancing Accuracy and Speed
+Remember our production constraint: models must predict in milliseconds.
+While you don't have this hard constraint during the hackathon, be cautious with overly complex architectures (like large transformers) that are slow and hard to tune.
+Sometimes, neural networks with embeddings can outperform tree-based models, especially when the data has many sparse categorical features.
+7. Experimenting with Feature Design
+Strong feature design often drives the biggest performance improvements.
+Think about cross-features (e.g., country * hour interactions). Could a specific neural network architecture help model these high-order interactions effectively?
+When encoding features, consider:
+Categorical: Label encoding, frequency encoding, or embeddings.
+Time: Day of the week, hour of the day, or recency.
+User History: Counts, averages, or recency-weighted stats.
+Remember that too many noisy or redundant features can harm both accuracy and inference speed.
+Evaluation
+🏆 How You'll Be Judged
+The Leaderboard Metric (MSLE): The official competition leaderboard will be ranked using the Mean Squared Logarithmic Error (MSLE).
+
+The "Real-World" Metric (The Judges): We know MSLE isn't a perfect metric for this problem. Because our dataset contains a very high number of installations with zero revenue, a model that just predicts '0' for every user can achieve a deceptively good-looking score. This is not a useful model for us.
+
+Therefore, the final winner will not be decided only by the leaderboard. A high rank is crucial, but our judges will also conduct a final review, paying close attention to the simplicity, efficiency, and overall design of your solution.
+
+Your Own Metrics: We strongly encourage you to find and use the metrics that work best for your specific model during development. For instance, you might want to track your model's ability to predict who will become a buyer (e.g., using AUC or F1) separately from how much they will spend. Use the metrics that best guide your design choices.
+
+Submissions are evaluated on [MSLE](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_log_error.html between the predicted iap_revenue_d7 and the observed target.
+
+Submission File
+For each row_id in the test set, you must predict a probability for the iap_revenue_d7 variable. The file should contain a header and have the following format:
+
+row_id,iap_revenue_d7
+12345ab0-a11a-1a11-bb0a-000a00cbe0d0,0.0
+23456ab0-a11a-1a11-bb0a-000a00cbe0d0,1714.0
+34567ab0-a11a-1a11-bb0a-000a00cbe0d0,0.8783
+etc.
